@@ -1,0 +1,31 @@
+name: DotNet Test App
+
+on:
+  pull_request:
+    branches: [ $default-branch ]
+
+jobs:
+  build:
+
+    env:
+      TEST_PROJECT_PATH: ''
+      PROJECT_PATH: ''
+
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        dotnet_version: [3.1.301]
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ matrix.dotnet_version }}
+
+    - name: Executar testes automatizados
+      run: dotnet test ${{ env.TEST_PROJECT_PATH }} --verbosity minimal 
+
+    - name: Build com o utilitario dotnet
+      run: dotnet build ${{ env.PROJECT_PATH }} --configuration Release
